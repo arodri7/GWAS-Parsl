@@ -9,7 +9,8 @@ import sys
 #print(parsl.__version__)
 parsl.load(config)
 
-plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.07-mac-intel/plink"
+#plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.07-mac-intel/plink"
+plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink2-mac-intel/plink2"
 steps = ["missingness_qc", "sex_discrepancy_qc", "maf_qc", "hwe_qc", "het_qc", "relatedness_qc"]
 
 
