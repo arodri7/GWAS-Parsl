@@ -17,7 +17,7 @@ steps = []
 @bash app
 def convert_vcf2plink(inputs=[], outputs=[]):
     out_prefix = outputs[0].replace(".bed", "")
-    cmd_line = "plink --vcf %s --make-bed --out %s" % (inputs[0], out_prefix)
+    cmd_line = "%s --vcf %s --make-bed --out %s" % (plink, inputs[0], out_prefix)
     return cmd_line
 
 # take plink input and assign unique indentifiers to the SNPs with a missing rs-identifier
@@ -25,7 +25,7 @@ def convert_vcf2plink(inputs=[], outputs=[]):
 def plink_assign_missing_ids(inputs=[], outputs=[]):
     out_prefix = outputs[0].replace(".bed", "")
     b_prefix = inputs[0].replace(".bed", "")
-    cmd_line = "plink --bfile %s --set-missing-var-ids @:#[b37]\$1,\$2 --make-bed --out %s" % (b_prefix, out_prefix)
+    cmd_line = "%s --bfile %s --set-missing-var-ids @:#[b37]\$1,\$2 --make-bed --out %s" % (plink, b_prefix, out_prefix)
     return cmd_line
 
 # Remove SNPs and individuals with high levels of missingness.
