@@ -5,6 +5,8 @@ from parsl.configs.local_threads import config
 
 #parsl.set_stream_logger() # <-- log everything to stdout
 
+# python reference-qc-gwas-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/plink_remove_het.bed --reference /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/references/ALL.2of4intersection.20100804.genotypes.vcf.gz --population /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/references/20100804.ALL.panel --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/ --prune /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/indepSNP.prune.in --step-start plot_qc
+
 #print(parsl.__version__)
 parsl.load(config)
 
@@ -226,7 +228,6 @@ def parse_args():
     parser.add_argument('--step-start', dest='step_start',
                         choices=steps,
                         help='Step to start in. The assumption is that the input must be ready for the step you are starting from.')
-
     return(parser.parse_args())
 
 # Main function controls the inputs and steps to submit

@@ -5,24 +5,27 @@ from parsl.configs.local_threads import config
 
 #parsl.set_stream_logger() # <-- log everything to stdout
 
+# python association-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/HapMap_3_r3_13 --covariates /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/ALL.2of4intersection.20100804.genotypes.1kG_MDS.covariants.txt --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/
+
 #print(parsl.__version__)
 parsl.load(config)
 
 #plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.07-mac-intel/plink"
-plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink2-mac-intel/plink2"
+#plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink2-mac-intel/plink2"
+plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.90-mac-intel/plink"
 #steps = ["missingness_qc", "sex_discrepancy_qc", "maf_qc", "hwe_qc", "het_qc", "relatedness_qc"]
 steps = []
 
 # run association part
-@bash app
+@bash_app
 def plink_assoc(inputs=[], outputs=[]):
     out_prefix_assoc = outputs[0].replace(".assoc", "")
-    out_prefix_logistic = outputs[9].replace(".assoc_2.logistic", "")
+    out_prefix_logistic = outputs[4].replace(".assoc_2.logistic", "")
     b_prefix = inputs[0].replace(".bed", "")
     covar_file = inputs[1]
     cmd_line = '%s --bfile %s --assoc --out %s' % (plink, b_prefix, out_prefix_assoc)
-    cmd_line += ';%s --bfile %s --covar %s --logistic --hide-covar --out %s' % (plink, b_prefix, covar_file, out_prefix)
-    cmd_line += 'awk \'!/\'NA\'/\' %s.assoc.logistic > %s.assoc_2.logistic' % (out_prefix_logistic, out_prefix_logistic)
+    cmd_line += ';%s --bfile %s --covar %s --logistic --hide-covar --out %s' % (plink, b_prefix, covar_file, out_prefix_logistic)
+    cmd_line += ';awk \'!/\'NA\'/\' %s.assoc.logistic > %s.assoc_2.logistic' % (out_prefix_logistic, out_prefix_logistic)
     return cmd_line
 
 # plot association of data
@@ -38,9 +41,9 @@ def plot_assoc(inputs=[], outputs=[]):
     robjects.r('''manhattan(results_log,chr="CHR",bp="BP",p="P",snp="SNP", main = "Manhattan plot: logistic")''')
     robjects.r('''dev.off()''')
     robjects.r('''jpeg("%s")''' % outputs[1])
-    robjects.r('''manhattan(results_as,chr="CHR",bp="BP",p="P",snp="SNP", main = "Manhattan plot: assoc")''')
+    robjects.r('''manhattan(results_as, ylim = c(0, 10), chr="CHR",bp="BP",p="P",snp="SNP", main = "Manhattan plot: assoc")''')
     robjects.r('''dev.off()''')
-
+    print("HELLO")
     robjects.r('''jpeg("%s")''' % outputs[2])
     robjects.r('''qq(results_log$P, main = "Q-Q plot of GWAS p-values : log")''')
     robjects.r('''dev.off()''')
@@ -55,7 +58,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process GWAS pipeline for different steps.')
     parser.add_argument('--input-directory', dest='input_dir', 
                         help='Location of the input GWAS data')
-    parser.add_argument('--population', dest='pop',
+    parser.add_argument('--covariates', dest='covar',
                         help='population information of the 1000 genomes dataset')
     parser.add_argument('--output-directory', dest='output_dir',
                         help='Location of the outputs GWAS data')
@@ -87,19 +90,14 @@ def main():
 
     #print("FLAG STEP1: %s" % flag_start)    
     output_s1 = [args.output_dir + "assoc_results.assoc",
-                 args.output_dir + "assoc_results.bed",
-                 args.output_dir + "assoc_results.fam", 
-                 args.output_dir + "assoc_results.bim",
                  args.output_dir + "assoc_results.log", 
-                 args.output_dir + "logistic_results.bed",
-                 args.output_dir + "logistic_results.fam",
-                 args.output_dir + "logistic_results.bim",
+                 args.output_dir + "logistic_results.assoc.logistic",
                  args.output_dir + "logistic_results.log",
                  args.output_dir + "logistic_results.assoc_2.logistic"]
 
     if flag_start is True:
         # Run association and logistic
-        s1 = plink_assoc(inputs=[args.input_dir], outputs=output_s1)
+        s1 = plink_assoc(inputs=[args.input_dir, args.covar], outputs=output_s1)
         s1.result()
         wo.extend(s1.outputs)
 
@@ -110,7 +108,7 @@ def main():
                 ]
     if flag_start is True:
         # Generate association plots.
-        s2 = plot_assoc(inputs=[output_s1[0], output_s1[9]], outputs=output_s2)
+        s2 = plot_assoc(inputs=[output_s1[0], output_s1[4]], outputs=output_s2)
         s2.result()
         wo.extend(s2.outputs)
 
