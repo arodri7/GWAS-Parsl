@@ -188,9 +188,6 @@ def plot_mds(inputs=[], outputs=[]):
     #race = robjects.DataFrame.from_csvfile("%s" % inputs[1], header=True, sep=" ")
     race = read_csv("%s" % inputs[1], delimiter=r"\s+")
     datafile = pd.concat([data, race], axis=1,ignore_index=False, sort=True)
-    #robjects.r('''datafile<- merge(%s,%s,by=c("IID","FID"))''' % (data.r_repr(), race.r_repr()))
-    #print(datafile)
-    #robjects.r('''for (i in 1:nrow(datafile)){''')
     for index, row in datafile.iterrows():
         if row['race'] == "EUR":
             robjects.r('''plot(%s,%s,type="p",xlim=c(-0.1,0.2),ylim=c(-0.15,0.1),xlab="MDS Component 1",ylab="MDS Component 2",pch=1,cex=0.5,col="green")''' % (row['C1'], row['C5']))
