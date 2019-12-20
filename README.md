@@ -17,3 +17,6 @@ The following is a list of dependencies which will need to be installed in your 
 The following reference data needs to be included in the analysis to perform stratification quality control.
 
 Instructions to be added later ...
+
+## To read
+[A flexible and parallelizable approach to genome‐wide polygenic risk scores ](https://onlinelibrary.wiley.com/doi/epdf/10.1002/gepi.22245)
