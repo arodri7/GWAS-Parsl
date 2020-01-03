@@ -57,7 +57,11 @@ Checks for heterozygosity are performed on a set of SNPs which are not highly co
 ### Relatedness control
 Remove relatedness individuals. It is essential to check datasets you analyse for cryptic relatedness. Assuming a random population sample we are going to exclude all individuals above the pihat threshold of 0.2
 
+The python script [```gwas-qc-parsl.py```]() runs all these quality control checks. To run this, activate the environemnt and run:
+
 ```#python gwas-qc-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inputs/HapMap_3_r3_1.bed --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/  --inversion-regions /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inversion.txt  --step-start relatedness_qc```
+
+## Stratification and Association Analysis
 
 
 ## To read
