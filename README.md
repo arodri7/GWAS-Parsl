@@ -57,11 +57,37 @@ Checks for heterozygosity are performed on a set of SNPs which are not highly co
 ### Relatedness control
 Remove relatedness individuals. It is essential to check datasets you analyse for cryptic relatedness. Assuming a random population sample we are going to exclude all individuals above the pihat threshold of 0.2
 
-The python script [```gwas-qc-parsl.py```]() runs all these quality control checks. To run this, activate the environemnt and run:
+The python script [```gwas-qc-parsl.py```](https://github.com/arodri7/GWAS-Parsl/blob/master/gwas-qc-parsl.py) runs all these quality control checks. To run this, activate the environemnt and run:
 
 ```#python gwas-qc-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inputs/HapMap_3_r3_1.bed --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/  --inversion-regions /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inversion.txt  --step-start relatedness_qc```
 
-## Stratification and Association Analysis
+## Stratification
+Before performing the association analysis we need to make sure the data are all from the same background. This is one of the limitations on GWAS. We perform stratification quality control to separate the data using the reference data material from 1000 Genome material.
+The following are in general the steps for stratification:
+- Convert from vcf to plink format
+- Take plink input and assign unique indentifiers to the SNPs with a missing rs-identifier
+- Remove SNPs with a low MAF frequency
+- Run the MDS removal part to generate plots for stratification
+    - Extract the variants present in HapMap dataset from the 1000 genomes dataset.
+    - Extract the variants present in 1000 Genomes dataset from the HapMap dataset.
+    - The datasets must have the same build. Change the build 1000 Genomes data build.
+    - Prior to merging 1000 Genomes data with the HapMap data we want to make sure that the files are mergeable:
+        1) Make sure the reference genome is similar in the HapMap and the 1000 Genomes Project datasets.
+        2) Resolve strand issues.
+        3) Remove the SNPs which after the previous two steps still differ between datasets.
+
+    - Merge HapMap with 1000 Genomes Data.
+    - Perform MDS on HapMap-CEU data anchored by 1000 Genomes data.
+    - Using a set of pruned SNPs
+    - Convert population codes into superpopulation codes (i.e., AFR,AMR,ASN, and EUR).
+    - Create a racefile of your own data.
+    - Concatenate racefiles.
+    - Exclude ethnic outliers.
+    - Select individuals in HapMap data below cut-off thresholds -The cut-off levels are not fixed thresholds but have to be determined based on the  visualization of the first two dimensions. To exclude ethnic outliers, the thresholds need to be set around the cluster of population of interest. For now we will hardcode to exclude non EURopeian. 
+    - Create covariates based on MDS.
+    - Perform an MDS ONLY on HapMap data without ethnic outliers - The values of the 10 MDS dimensions are subsequently used as covariates in the association analysis in the third tutorial.
+    - Plot stratification of data
+    
 
 
 ## To read
