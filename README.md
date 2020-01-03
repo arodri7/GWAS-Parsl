@@ -59,7 +59,11 @@ Remove relatedness individuals. It is essential to check datasets you analyse fo
 
 The python script [```gwas-qc-parsl.py```](https://github.com/arodri7/GWAS-Parsl/blob/master/gwas-qc-parsl.py) runs all these quality control checks. To run this, activate the environemnt and run:
 
-```#python gwas-qc-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inputs/HapMap_3_r3_1.bed --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/  --inversion-regions /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inversion.txt  --step-start relatedness_qc```
+```#python gwas-qc-parsl.py \
+   --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inputs/HapMap_3_r3_1.bed \ 
+   --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/  \
+   --inversion-regions /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inversion.txt \
+   --step-start relatedness_qc```
 
 ## Stratification
 Before performing the association analysis we need to make sure the data are all from the same background. This is one of the limitations on GWAS. We perform stratification quality control to separate the data using the reference data material from 1000 Genome material.
