@@ -88,6 +88,19 @@ The following are in general the steps for stratification:
     - Perform an MDS ONLY on HapMap data without ethnic outliers - The values of the 10 MDS dimensions are subsequently used as covariates in the association analysis in the third tutorial.
     - Plot stratification of data
     
+The python script [```reference-qc-gwas-parsl.py```](https://github.com/arodri7/GWAS-Parsl/blob/master/reference-qc-gwas-parsl.py) runs the stratification step. To run this, activate the environemnt and run:
+
+```python reference-qc-gwas-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/plink_remove_het.bed --reference /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/references/ALL.2of4intersection.20100804.genotypes.vcf.gz --population /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/references/20100804.ALL.panel --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/ --prune /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/indepSNP.prune.in --step-start plot_qc```
+
+## Association Analysis
+The next step ingests the filtered data and the multiple stratified groups and performs association analysis on each group which will generate multiple summary association files which can then be used in the PRS downstream process. The steps are simple and performed using plink:
+- Binary traits association - Note, the --assoc option does not allow to correct covariates such as principal components (PC's)/ MDS components, which makes it less suited for association analyses.
+- Logistic - We will be using 10 principal components as covariates in this logistic analysis.
+- The results obtained from these GWAS analyses will be visualized in the last step. This will also show if the data set contains any genome-wide significant SNPs.
+
+The python script [```association-parsl.py```](https://github.com/arodri7/GWAS-Parsl/blob/master/association-parsl.py) runs the association step. To run this, activate the environemnt and run:
+
+```python association-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/HapMap_3_r3_13 --covariates /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/ALL.2of4intersection.20100804.genotypes.1kG_MDS.covariants.txt --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/```
 
 
 ## To read
