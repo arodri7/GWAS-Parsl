@@ -45,10 +45,17 @@ Investigate missingness per individual and per SNP and generate histograms outpu
 Subjects who were a priori determined as females must have a F value of <0.2, and subjects who were a priori determined as males must have a F value >0.8. This F value is based on the X chromosome inbreeding (homozygosity) estimate. Subjects who do not fulfil these requirements are flagged "PROBLEM" by PLINK.
 
 ### Minor allele Frequency
-Generate a bfile with autosomal SNPs only and delte SNPs with a low minor allele Frequency. Select autosomal SNPs only from chr 1 to 22.
-- hwe_qc
-- het_qc
-- relatedness_qc
+Generate a bfile with autosomal SNPs only and delte SNPs with a low minor allele Frequency (MAF). Select autosomal SNPs only from chr 1 to 22 and then remove the variants with low MAF.
+
+### Hardy-Weinberg equilibrium
+Delete SNPs which are not in Hardy-Weinberg equilibrium (HWE). By default the --hwe option in plink only filters for controls. Therefore, two steps, first we use a stringent HWE threshold for controls, followed by a less stringent threshold for the case data. The HWE threshold for the cases filters out only SNPs which deviate extremely from HWE. This second HWE step only focusses on cases because in the controls all SNPs with a HWE p-value < hwe 1e-6 were already removed. Theoretical background for this step is given in our accompanying [article](https://www.ncbi.nlm.nih.gov/pubmed/29484742).
+
+### Heterozygozity control
+Remove individuals with a heterozygosity rate deviating more than 3 standard deviations from the mean.
+Checks for heterozygosity are performed on a set of SNPs which are not highly correlated. Therefore, to generate a list of non-(highly)correlated SNPs, we exclude high inversion regions (inversion.txt [High LD regions]) and prune the SNPs using the command --indep-pairwise<92>. The parameters <91>50 5 0.2<92> stand respectively for: the window size, the number of SNPs to shift the window at each step, and the multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously.
+
+### Relatedness control
+Remove relatedness individuals. It is essential to check datasets you analyse for cryptic relatedness. Assuming a random population sample we are going to exclude all individuals above the pihat threshold of 0.2
 
 ```#python gwas-qc-parsl.py --input-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inputs/HapMap_3_r3_1.bed --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/outputs/  --inversion-regions /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/1_QC_GWAS/inversion.txt  --step-start relatedness_qc```
 
