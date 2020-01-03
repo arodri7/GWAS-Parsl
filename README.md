@@ -121,6 +121,61 @@ python association-parsl.py \
     --output-directory /Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/GWA_tutorial/2_Population_stratification/outputs/
 ```
 
+## Polygenic Risk Score (PRS)
+PRS implementation of GWAS data. We will implement multiple methods so the user can decide which to use
+Initial methods will include:
+- LDPred
+- PRSice-2
+We can add more methods later on to compare which performs best.
+
+In order to run PRS for GWAS data, we need the base and target data. The base data is essentially the association summary file from the GWAS study. The target data are the individuals which we wish to generate a polygenic risk score for. Usually, this should include more than 100 individuals. No matter which PRS method we use, the base and target data need to go through QC.
+The QC steps performed for both the base and target data are similar to the QC steps followed for the GWAS analysis. Thus, we can call the same functions we have used previously. Most importantly, we need to make sure that samples in the target data are not included in the base data, otherwise the PRS will be skewed and there will be too many false positives.
+
+#### Outline of QC steps for Base and Target data:
+- Heritability check - For now we will assume that is higher than 0.05. This is something that needs to be done for each association file.
+- Effect allele - This is clearly marked on the association file (col A1)
+- Genome build - This check will need to be made for the target qc step
+- Standard GWAS QC - Since we will only have an association file, we will perform QC only on the file.
+                   - For the target QC, we should have plink files and we can use regular plink qc steps
+- Ambiguous SNPs - Ambiguous SNPs can be removed in the base data and then there will be no such SNPs in the subsequent analyses, since analyses are performed only on SNPs that overlap between the base and target data.
+- Mismatching genotypes - since we need the target data to know which SNPs have mismatching genotypes across the data sets, then we will perform this 'allele flipping' in the target data.
+- Duplicate SNPs - Most PRS software do not allow duplicated SNPs in the base data input and thus they should be removed
+- Sex chromosomes - Previously performed QC on these data removed individuals with mismatching (inferred) biological and reported sex. Already performed on base data.
+- Sample overlap with target data - users should ensure that the possibility of sample overlap between the base and target data is minimised
+- Relatedness - users should ensure that the possibility of closely related individuals between the base and target data is minimised. This is part of the QC performed in generating the association file.
+    
+The QC steps will be explained throughout this script for both the base and target data.
+
+### Base QC
+Performs qc on the base data. There are some assumptions that come from generating the association file and those steps are skipped since these qc steps are performed before.
+Biggest assumption is that the GWAS association file was generated locally.
+For external GWAS association files, we will need to perform more checks.
+This only covers base files created locally!
+
+Checks to be skipped and performed:
+- Heritability check - DONE - this is performed after the GWAS association file has been generated. This should already be known and it should be higher than 0.05
+- Effect allele - DONE in post-association step.
+- Genome build - will be done at the target level
+- Standard GWAS qc -
+    - Filter the SNPs according to INFO score and MAF since we only have a summary base file. SNPs with low minor allele frequency (MAF) or imputation information score (INFO) are more likely to generate false positive results due to their lower statistical power. Therefore, SNPs with low MAF and INFO are typically removed before performing downstream analyses.
+    - Ambiguous SNPs QC - Ambiguous SNPs can be removed in the base data and then there will be no such SNPs in the subsequent analyses, since analyses are performed only on SNPs that overlap between the base and target data
+    - Duplicate SNPs QC - Most PRS software do not allow duplicated SNPs in the base data input and thus they should be removed.
+- Ambiguous SNPs - YES
+- Mismatching genotypes - will be done at the target level
+- Duplicate SNPs - YES
+- Sex chromosome - DONE
+- Sample overlap with target data - will be done at the target level
+- Relatedness - DONE
+
+### Target QC
+This consists of individual-level genotype-phenotype data, usually generated within your lab/department/collaboration
+- Genome build - YES
+- Standard GWAS qc - YES
+- Mismatching genotypes - YES
+- Duplicate SNPs - YES
+- Sex chromosome - YES
+- Sample overlap with target data - YES
+- Relatedness - YES
 
 ## To read
 [A flexible and parallelizable approach to genome‐wide polygenic risk scores ](https://onlinelibrary.wiley.com/doi/epdf/10.1002/gepi.22245)
