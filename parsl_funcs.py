@@ -517,4 +517,35 @@ def plot_assoc(inputs=[], outputs=[]):
     robjects.r('''qq(results_as$P, main = "Q-Q plot of GWAS p-values : log")''')
     robjects.r('''dev.off()''')
 
+# For PRS: Base qc for standard gwas qc. Only checks for MAF and if available INFO field (imputation score)
+@bash_app
+def base_gwas_qc(inputs=[], outputs=[]):
+    input_assoc = inputs[0]
+    cmd_line = 'awk \'NR==1 || ($6 > 0.01) && ($10 > 0.8) {print}\' %s > %s' % (input_assoc, outputs[0])
+    return cmd_line
+
+# For PRS: Base qc for Ambiguous SNPs
+@bash_app
+def base_amb_snps_qc(inputs=[], outputs=[]):
+    input_assoc = inputs[0]
+    cmd_line = 'awk \'!( ($4=="A" && $5=="T") || ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}\'' % (input_assoc, outputs[0])
+    return cmd_line 
+
+# For PRS: Base qc for Duplicate SNPs
+@bash_app
+def base_dup_snps_qc(inputs=[], outputs=[]):
+    input_assoc = inputs[0]
+    duplicated_snps = os.path.dirpath(input_assoc) + "/duplicated.snp"
+    cmd_line = 'awk \'{ print $1}\' %s | sort | uniq -d > %s; cat %s | grep -vf %s' % (input_assoc, duplicated_snps, input_assoc, outputs[0])
+    return cmd_line
+
+# For PRS: Targe qc for having same genome build
+@bash_app
+def target_build_qc(inputs=[], outputs=[]):
+    input_b = inputs[0].replace(".bed", "")
+    output_prefix = outputs[0].replace(".bed", "")
+    ## The datasets must have the same build. Change the build 1000 Genomes data build.
+    #cmd_line = 'awk \'{print$2,$4}\' %s/HapMap_MDS.map > %s/target_buildhapmap.txt' % (outd, outd)
+    #cmd_line += ';%s --bfile %s/1kG_MDS6 --update-map %s/buildhapmap.txt --make-bed --out %s/1kG_MDS7' % (plink, outd, outd, outd)
+
 
