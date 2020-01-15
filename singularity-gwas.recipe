@@ -85,7 +85,8 @@ From: ubuntu:latest
     R --slave -e 'install.packages(c("qqman"), repos="https://cloud.r-project.org/")'
 
     # install rpy2
-    #pip3 install -U rpy2
+    pip3 install wheel
+    pip3 install -U rpy2
 
     # Removing installation overhead.
     cd
