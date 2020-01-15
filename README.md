@@ -36,19 +36,19 @@ Steps to build the image are the following:
     - Install Singularity
     - Initiate a VM using vagrant, bring up the VM and ssh to VM
     
-    ```
+    
     mkdir singularity-VM
     cd singularity-VM
     vagrant init singularityware/singularity-2.4
     vagrant up
     vagrant ssh
-    ```
     
     - Download the recipe and build image
-    ```
+    
+    
     wget https://github.com/arodri7/GWAS-Parsl/blob/master/singularity-gwas.recipe
     sudo singularity build singularity-gwas.simg singularity-gwas.recipe
-    ```
+    
 
 You should now see an image file called ```singularity-gwas.simg```, which can be used to run your commands in the script.
 
