@@ -28,6 +28,27 @@ The following is a list of dependencies which will need to be installed in your 
     - [ldsc v1.0.0](https://github.com/bulik/ldsc/wiki/Heritability-and-Genetic-Correlation) - Needed for post-GWAS validation.
     - [PRSice-2](https://github.com/choishingwan/PRSice) - Needed for PRS
     - [LDPred v1.0.8](https://github.com/bvilhjal/ldpred) - Needed for PRS
+    
+### Building the Singularity image
+We built a singularity image containing the necessary tools to run the GWAS application. The recipe can be accessed [here](https://github.com/arodri7/GWAS-Parsl/blob/master/singularity-gwas.recipe).
+Steps to build the image are the following:
+    - Install Vagrant
+    - Install Singularity
+    - Initiate a VM using vagrant, bring up the VM and ssh to VM
+    ```
+    mkdir singularity-VM
+    cd singularity-VM
+    vagrant init singularityware/singularity-2.4
+    vagrant up
+    vagrant ssh
+    ```
+    - Download the recipe and build image
+    ```
+    wget https://github.com/arodri7/GWAS-Parsl/blob/master/singularity-gwas.recipe
+    sudo singularity build singularity-gwas.simg singularity-gwas.recipe
+    ```
+
+You should now see an image file called ```singularity-gwas.simg```, which can be used to run your commands in the script.
 
 ## Reference Data
 The following reference data needs to be included in the analysis to perform stratification quality control.
