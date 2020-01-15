@@ -13,6 +13,8 @@ From: ubuntu:latest
 
     PATH=$PATH:/plink-ng-b15c19f/1.9/
     export PATH
+    LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH
 
 %labels
 
@@ -82,11 +84,11 @@ From: ubuntu:latest
     make install
 
     # Install required R packages
-    R --slave -e 'install.packages(c("qqman"), repos="https://cloud.r-project.org/")'
+    R --slave -e 'install.packages(c("qqman", "ggplot2"), repos="https://cloud.r-project.org/")'
 
     # install rpy2
     pip3 install wheel
-    pip3 install -U rpy2
+    pip3 install -U rpy2 pandas
 
     # Removing installation overhead.
     cd

@@ -4,7 +4,8 @@ from parsl.configs.local_threads import config
 
 #plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.07-mac-intel/plink"
 #plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink2-mac-intel/plink2"
-plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.90-mac-intel/plink"
+#plink = "/Users/arodri7/Documents/Work/DOE-MVP/GWAS-VA/plink-1.90-mac-intel/plink"
+plink = "singularity exec /Users/arodri7/singularity-vm/singularity-gwas.simg plink"
 
 # Investigate missingness per individual and per SNP and generate histograms
 # output: plink.imiss and plink.lmiss, these files show respectively the proportion
