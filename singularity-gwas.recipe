@@ -1,0 +1,101 @@
+Bootstrap: docker
+
+From: ubuntu:latest
+
+%runscript
+
+    # Allows us to run the versions of the packages installed in the post
+    # section
+    exec "$@"
+
+
+%environment
+
+    PATH=$PATH:/plink-ng-b15c19f/1.9/
+    export PATH
+
+%labels
+
+   AUTHOR a.rodriguez@anl.gov
+   Contains Plink Version 1.9
+   Contains R version 3.6.0
+
+%post
+
+    # Make some directories for storage
+    mkdir /new_folder_1 /new_folder_2
+    apt-get update
+    apt-get -y upgrade
+
+    apt-get update && apt-get install -y --no-install-recommends \
+        python3 \
+        git \
+        wget \
+        software-properties-common \
+        build-essential \
+        apt-transport-https \
+        curl \
+        libfreetype6-dev \
+        pkg-config \
+        python-dev \
+        dh-autoreconf \
+        liblzma-dev \
+        libbz2-dev \
+        libpcre3-dev \
+        libarchive-dev \
+        libatlas-base-dev \
+        zlib1g-dev \
+        gfortran \
+        g++ \ 
+        gcc \
+        make \
+        libcurl4-gnutls-dev \
+        python3-pip \ 
+        python3-setuptools
+
+    apt-get -y update
+    apt-get -y install software-properties-common
+    apt-add-repository -y universe
+    apt-add-repository -y multiverse
+    add-apt-repository -y ppa:marutter/rrutter
+    apt-get -y update
+
+    # Install PLINK
+    wget https://github.com/chrchang/plink-ng/archive/b15c19f.tar.gz
+    tar xvf b15c19f.tar.gz
+    cd /plink-ng-b15c19f/1.9/
+    ./plink_first_compile
+    ln -s plink plink19
+
+    # Get R Package
+    export R_BASE_URI="https://cran.r-project.org/src/base/R-3/"
+    export R_FOLDER_NAME="R-3.6.0"
+    export R_PACKAGE_NAME="${R_FOLDER_NAME}.tar.gz"
+    export BUILDHOME="/tmp"
+
+    wget ${R_BASE_URI}${R_PACKAGE_NAME}
+    tar -xf $R_PACKAGE_NAME
+
+    cd $R_FOLDER_NAME
+    ./configure --with-readline=no --with-x=no --disable-java
+    make
+    make install
+
+    # Install required R packages
+    R --slave -e 'install.packages(c("qqman"), repos="https://cloud.r-project.org/")'
+
+    # install rpy2
+    #pip3 install -U rpy2
+
+    # Removing installation overhead.
+    cd
+    rm -rf /tmp/*
+    apt-get purge $BUILD_SOFTWARE -y
+    apt-get autoclean -y
+    apt-get autoremove -y
+    rm -rf /var/lib/apt/lists/*
+
+%test 
+    plink --version
+    # Can we call R?
+    R --version
