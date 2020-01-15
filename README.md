@@ -35,6 +35,7 @@ Steps to build the image are the following:
     - Install Vagrant
     - Install Singularity
     - Initiate a VM using vagrant, bring up the VM and ssh to VM
+    
     ```
     mkdir singularity-VM
     cd singularity-VM
@@ -42,6 +43,7 @@ Steps to build the image are the following:
     vagrant up
     vagrant ssh
     ```
+    
     - Download the recipe and build image
     ```
     wget https://github.com/arodri7/GWAS-Parsl/blob/master/singularity-gwas.recipe
